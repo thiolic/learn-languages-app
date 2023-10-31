@@ -1,3 +1,5 @@
+import Footer from '@/components/Footer';
+import Header from '@/components/Header';
 import { ClerkProvider } from '@clerk/nextjs';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
@@ -18,10 +20,10 @@ export default function RootLayout({
 	return (
 		<ClerkProvider>
 			<html lang="en">
-				<body className={inter.className}>
-					<header></header>
+				<body className={`${inter.className} bg-none bg-orange-400`}>
+					<Header />
 					<main className="container mx-auto">{children}</main>
-					<footer></footer>
+					<Footer />
 				</body>
 			</html>
 		</ClerkProvider>
