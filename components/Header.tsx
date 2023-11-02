@@ -16,8 +16,10 @@ const Header = () => {
 				aria-label="Global"
 			>
 				<Link className="flex items-center" href="/">
-					<BookOpenCheck color="#fff" size={32} />
-					<span className="sr-only">Home</span>
+					<span className="flex p-3 border-solid border-white border-2 rounded-full mr-2">
+						<BookOpenCheck color="#fff" size={32} />
+					</span>
+					<span className="text-3xl">PGE</span>
 				</Link>
 			</nav>
 			<SignedOut>

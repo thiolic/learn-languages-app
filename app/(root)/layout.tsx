@@ -22,7 +22,9 @@ export default function RootLayout({
 			<html lang="en">
 				<body className={`${inter.className} bg-none bg-orange-400`}>
 					<Header />
-					<main className="container mx-auto">{children}</main>
+					<main className="container max-w-full bg-sky-700 mt-2 mb-2 grow">
+						{children}
+					</main>
 					<Footer />
 				</body>
 			</html>

@@ -19,7 +19,9 @@ export const RootLayout = ({ children }: RootLayoutProps): ReactNode => {
 	return (
 		<ClerkProvider>
 			<html lang="en">
-				<body className={inter.className}>{children}</body>
+				<body className={`${inter.className} bg-none bg-orange-400`}>
+					{children}
+				</body>
 			</html>
 		</ClerkProvider>
 	);
