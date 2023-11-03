@@ -14,8 +14,4 @@ export const UserValidationSchema = z.object({
 		.string()
 		.min(3, { message: 'Must be 3 or more characters long' })
 		.max(30, { message: 'Must be 30 or fewer characters long' }),
-	bio: z
-		.string()
-		.min(3, { message: 'Must be 3 or more characters long' })
-		.max(1000, { message: 'Must be 1000 or fewer characters long' }),
 });

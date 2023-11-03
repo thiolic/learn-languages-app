@@ -9,11 +9,13 @@ import {
 	FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { updateUser } from '@/lib/actions/user.actions';
 import { useUploadThing } from '@/lib/uploadthing';
 import { isBase64Image } from '@/lib/utils';
 import { UserValidationSchema } from '@/lib/validations/user';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
+import { usePathname, useRouter } from 'next/navigation';
 import { ChangeEvent, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -30,6 +32,8 @@ interface AccountProfileProps {
 const AccountProfile = ({ user, btnTitle }: AccountProfileProps) => {
 	const [files, setFiles] = useState<File[]>([]);
 	const startUpload = useUploadThing('media');
+	const router = useRouter();
+	const pathname = usePathname();
 
 	const form = useForm({
 		resolver: zodResolver(UserValidationSchema),
@@ -37,20 +41,29 @@ const AccountProfile = ({ user, btnTitle }: AccountProfileProps) => {
 			profile_photo: '',
 			name: '',
 			username: '',
-			bio: '',
 		},
 	});
 
-	const onSubmit = async (values: z.infer<typeof UserValidationSchema>) => {
-		const blob = values.profile_photo;
+	const onSubmit = async ({
+		profile_photo,
+		username,
+		name,
+	}: z.infer<typeof UserValidationSchema>) => {
+		console.log(22222);
+		const blob = profile_photo;
 
-		const hasImageChanged = isBase64Image(blob);
-		if (hasImageChanged) {
-			const imgRes = await startUpload(files);
+		await updateUser({
+			userId: user.id,
+			username,
+			name,
+			image: profile_photo,
+			path: pathname,
+		});
 
-			if (imgRes && imgRes[0].fileUrl) {
-				values.profile_photo = imgRes[0].fileUrl;
-			}
+		if (pathname === '/profile/edit') {
+			router.back();
+		} else {
+			router.push('/');
 		}
 	};
 
@@ -59,6 +72,22 @@ const AccountProfile = ({ user, btnTitle }: AccountProfileProps) => {
 		fieldChange: (value: string) => void
 	) => {
 		e.preventDefault();
+
+		const fileReader = new FileReader();
+
+		if (e.target.files && e.target.files.length > 0) {
+			const file = e.target.files[0];
+			setFiles(Array.from(e.target.files));
+
+			if (!file.type.includes('image')) return;
+
+			fileReader.onload = async (event) => {
+				const imageDataUrl = event.target?.result?.toString() || '';
+				fieldChange(imageDataUrl);
+			};
+
+			fileReader.readAsDataURL(file);
+		}
 	};
 
 	return (
@@ -93,6 +122,7 @@ const AccountProfile = ({ user, btnTitle }: AccountProfileProps) => {
 									}
 								/>
 							</FormControl>
+							<FormMessage></FormMessage>
 						</FormItem>
 					)}
 				/>
@@ -130,7 +160,7 @@ const AccountProfile = ({ user, btnTitle }: AccountProfileProps) => {
 						</FormItem>
 					)}
 				/>
-				<Button type="submit">Submit</Button>
+				<Button type="submit">{btnTitle}</Button>
 			</form>
 		</Form>
 	);
